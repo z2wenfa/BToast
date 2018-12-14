@@ -1,8 +1,8 @@
 package com.shi.bravin.app;
 
-import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 
 import com.bravin.btoast.BToast;
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 BToast.success(v.getContext())
                         .text(R.string.text_test_content)
+                        .toastGravity(Gravity.CENTER)
                         .show();
             }
         });

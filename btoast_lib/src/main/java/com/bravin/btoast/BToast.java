@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -275,9 +274,9 @@ public class BToast {
                     wrapperLP.height = ViewGroup.LayoutParams.MATCH_PARENT;
                     if (toastDesc.relativeGravity == RELATIVE_GRAVITY_START) {
                         gravityRule = RelativeLayout.ALIGN_PARENT_TOP;
-                    } else if (toastDesc.relativeGravity == RELATIVE_GRAVITY_CENTER){
+                    } else if (toastDesc.relativeGravity == RELATIVE_GRAVITY_CENTER) {
                         gravityRule = RelativeLayout.CENTER_VERTICAL;
-                    }else {
+                    } else {
                         gravityRule = RelativeLayout.ALIGN_PARENT_BOTTOM;
                     }
                 }
@@ -348,9 +347,9 @@ public class BToast {
                 } else {
                     if (toastDesc.relativeGravity == RELATIVE_GRAVITY_START) {
                         gravityRule = RelativeLayout.ALIGN_PARENT_TOP;
-                    } else if (toastDesc.relativeGravity == RELATIVE_GRAVITY_CENTER){
+                    } else if (toastDesc.relativeGravity == RELATIVE_GRAVITY_CENTER) {
                         gravityRule = RelativeLayout.CENTER_VERTICAL;
-                    }else {
+                    } else {
                         gravityRule = RelativeLayout.ALIGN_PARENT_BOTTOM;
                     }
                 }
@@ -482,12 +481,17 @@ public class BToast {
 
         applyStyle(toastLayout, toastDesc);
 
-        showToast(toastLayout, toastDesc.duration);
+        showToast(toastLayout, toastDesc.duration, toastDesc.toastGravity);
     }
 
-    private static void showToast(View toastView, int duration) {
+    private static void showToast(View toastView, int duration, ToastGravity toastGravity) {
         Toast toast = new Toast(app);
         toast.setView(toastView);
+        if (toastGravity != null) {
+            toast.setGravity(toastGravity.gravity, toastGravity.getXOffset(), toastGravity.getYOffset());
+        } else {
+            toast.setGravity(Gravity.BOTTOM, toast.getXOffset(), toast.getYOffset());
+        }
         toast.show();
 
         long delay = duration == DURATION_SHORT ? DURATION_SHORT : DURATION_LONG;
@@ -528,7 +532,7 @@ public class BToast {
 
         applyStyle(styleLayout, toastDesc);
 
-        showToast(toastLayout, toastDesc.duration);
+        showToast(toastLayout, toastDesc.duration, toastDesc.toastGravity);
     }
 
     private static void applyStyle(StyleLayout styleLayout, ToastDesc toastDesc) {
@@ -699,6 +703,8 @@ public class BToast {
 
         private int tag = 0;
 
+        private ToastGravity toastGravity = null;
+
         ToastDesc(String className) {
             this.className = className;
         }
@@ -824,6 +830,16 @@ public class BToast {
             return this;
         }
 
+        public ToastDesc toastGravity(int gravity, int xOffset, int yOffset) {
+            this.toastGravity = new ToastGravity(gravity, xOffset, yOffset);
+            return this;
+        }
+
+        public ToastDesc toastGravity(int gravity) {
+            this.toastGravity = new ToastGravity(gravity, 0, 0);
+            return this;
+        }
+
         public void show() {
             BToast.addToast(this);
         }
@@ -833,6 +849,46 @@ public class BToast {
                 return null;
             }
             return target.get();
+        }
+    }
+
+    public static class ToastGravity {
+        private int gravity;
+        private int xOffset;
+        private int yOffset;
+
+        public ToastGravity(int gravity) {
+            this.gravity = gravity;
+        }
+
+        public ToastGravity(int gravity, int xOffset, int yOffset) {
+            this.gravity = gravity;
+            this.xOffset = xOffset;
+            this.yOffset = yOffset;
+        }
+
+        public int getGravity() {
+            return gravity;
+        }
+
+        public void setGravity(int gravity) {
+            this.gravity = gravity;
+        }
+
+        public int getXOffset() {
+            return xOffset;
+        }
+
+        public void setXOffset(int xOffset) {
+            this.xOffset = xOffset;
+        }
+
+        public int getYOffset() {
+            return yOffset;
+        }
+
+        public void setYOffset(int yOffset) {
+            this.yOffset = yOffset;
         }
     }
 
@@ -871,7 +927,8 @@ public class BToast {
 
         private int longDurationMillis = 4500;
 
-        private Config() {}
+        private Config() {
+        }
 
         public static Config getInstance() {
             return new Config();
@@ -958,12 +1015,12 @@ public class BToast {
             return this;
         }
 
-        public Config setShortDurationMillis(int shortDurationMillis){
+        public Config setShortDurationMillis(int shortDurationMillis) {
             this.shortDurationMillis = shortDurationMillis;
             return this;
         }
 
-        public Config setLongDurationMillis(int longDurationMillis){
+        public Config setLongDurationMillis(int longDurationMillis) {
             this.longDurationMillis = longDurationMillis;
             return this;
         }
