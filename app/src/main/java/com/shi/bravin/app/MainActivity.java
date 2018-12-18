@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 BToast.normal(v.getContext())
                         .text(R.string.text_test_content)
+                        .radius(0)
                         .show();
             }
         });

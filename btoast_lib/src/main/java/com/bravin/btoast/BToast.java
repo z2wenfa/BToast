@@ -149,10 +149,14 @@ public class BToast {
                 ToastDesc toastDesc = (ToastDesc) msg.obj;
                 View target = toastDesc.getTarget();
                 if (target == null) {
-                    if (toastDesc.animate) {
-                        showAnimationToast(toastDesc);
+                    if (toastDesc.isIosStyle()) {
+                        showIOSStyleStaticToast(toastDesc);
                     } else {
-                        showStaticToast(toastDesc);
+                        if (toastDesc.animate) {
+                            showAnimationToast(toastDesc);
+                        } else {
+                            showStaticToast(toastDesc);
+                        }
                     }
                 } else {
                     View toastLayout = createToastLayout(target, toastDesc);
@@ -478,13 +482,18 @@ public class BToast {
     private static void showStaticToast(ToastDesc toastDesc) {
 
         StyleLayout toastLayout = null;
-        if (toastDesc.isIosStyle) {
-            toastLayout = (StyleLayout) (LayoutInflater.from(app)
-                    .inflate(R.layout.toast_layout_ios_style, null));
-        } else {
-            toastLayout = (StyleLayout) (LayoutInflater.from(app)
-                    .inflate(R.layout.toast_layout_no_animation_style, null));
-        }
+        toastLayout = (StyleLayout) (LayoutInflater.from(app)
+                .inflate(R.layout.toast_layout_no_animation_style, null));
+        applyStyle(toastLayout, toastDesc);
+
+        showToast(toastLayout, toastDesc.duration, toastDesc.toastGravity);
+    }
+
+    private static void showIOSStyleStaticToast(ToastDesc toastDesc) {
+
+        StyleLayout toastLayout = null;
+        toastLayout = (StyleLayout) (LayoutInflater.from(app)
+                .inflate(R.layout.toast_layout_ios_style, null));
         applyStyle(toastLayout, toastDesc);
 
         showToast(toastLayout, toastDesc.duration, toastDesc.toastGravity);
@@ -711,7 +720,7 @@ public class BToast {
 
         private ToastGravity toastGravity = null;
 
-        private boolean isIosStyle = true;
+        private boolean isIosStyle = false;
 
         ToastDesc(String className) {
             this.className = className;
