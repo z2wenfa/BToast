@@ -476,9 +476,15 @@ public class BToast {
     }
 
     private static void showStaticToast(ToastDesc toastDesc) {
-        StyleLayout toastLayout = (StyleLayout) (LayoutInflater.from(app)
-                .inflate(R.layout.toast_layout_no_animation_style, null));
 
+        StyleLayout toastLayout = null;
+        if (toastDesc.isIosStyle) {
+            toastLayout = (StyleLayout) (LayoutInflater.from(app)
+                    .inflate(R.layout.toast_layout_ios_style, null));
+        } else {
+            toastLayout = (StyleLayout) (LayoutInflater.from(app)
+                    .inflate(R.layout.toast_layout_no_animation_style, null));
+        }
         applyStyle(toastLayout, toastDesc);
 
         showToast(toastLayout, toastDesc.duration, toastDesc.toastGravity);
@@ -705,6 +711,8 @@ public class BToast {
 
         private ToastGravity toastGravity = null;
 
+        private boolean isIosStyle = true;
+
         ToastDesc(String className) {
             this.className = className;
         }
@@ -837,6 +845,15 @@ public class BToast {
 
         public ToastDesc toastGravity(int gravity) {
             this.toastGravity = new ToastGravity(gravity, 0, 0);
+            return this;
+        }
+
+        public boolean isIosStyle() {
+            return isIosStyle;
+        }
+
+        public ToastDesc setIosStyle(boolean iosStyle) {
+            isIosStyle = iosStyle;
             return this;
         }
 

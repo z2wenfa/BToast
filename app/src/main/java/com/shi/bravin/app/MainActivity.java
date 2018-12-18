@@ -1,5 +1,6 @@
 package com.shi.bravin.app;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -24,7 +25,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 BToast.success(v.getContext())
                         .text(R.string.text_test_content)
+                        .setIosStyle(true)
+                        .iconId(R.drawable.delete_fill)
+                        .tintColor(Color.parseColor("#3c3c3c"))
+                        .radius(25)
                         .toastGravity(Gravity.CENTER)
+                        .textColor(Color.parseColor("#ffffff"))
                         .show();
             }
         });
